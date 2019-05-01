@@ -9,6 +9,7 @@ Cython==0.29.7
 atomman==1.2.6
 requests==2.20.0
 nose==1.3.7
+toolz==0.9.0
 
 ## Install jq first on your system.
 ## Linux: sudo apt-get install jq
