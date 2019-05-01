@@ -1,0 +1,9 @@
+xmltodict
+numericalunits
+DataModelDict
+numpy
+scipy
+pandas
+matplotlib
+Cython
+atomman
