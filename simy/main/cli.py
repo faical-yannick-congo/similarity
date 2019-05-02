@@ -25,18 +25,23 @@ def reshape(src, dst, gen, prt):
     destination = "."
 
     if src:
-        source = src
-
-    if gen:
-        dump = True
+        with open(src, "r") as source_f:
+            source = json.loads(source_f.read())
 
     if dst:
         destination = dst
 
-    result = reshape_feature.reshape(source, destination, dump)
+    flattened = reshape_feature.reshape(source, destination)
+
+    if gen:
+        name = src.split("/")[-1]
+        blocks = name.split(".")
+        reshaped = "{0}/{1}-reshaped.{2}".format(destination, blocks[0], blocks[1])
+        with open(reshaped, "w") as reshaped_f:
+            reshaped_f.write(json.dumps(flattened, sort_keys=True, indent=4, separators=(',', ': ')))
 
     if prt:
-        print(json.dumps(result, sort_keys=True, indent=4, separators=(',', ': ')))
+        print(json.dumps(flattened, sort_keys=True, indent=4, separators=(',', ': ')))
 
 handle = click.CommandCollection(sources=[cli])
 

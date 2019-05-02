@@ -1,12 +1,62 @@
 from simy.features import reshape_feature
 import pkg_resources
+import json
 
 class TestReshape:
 
     def test_reshape(self):
         """testing the reshape functionality.
         """
-        expected = { "calculation-relax-static.calculation.LAMMPS-version": "22 Aug 2018",
+
+        source = {
+           "calculation-relax-static":{
+              "key":"00999575-6044-4420-baf5-9bb33e60b02c",
+              "calculation":{
+                 "iprPy-version":"0.8.3",
+                 "atomman-version":"1.2.4",
+                 "LAMMPS-version":"22 Aug 2018",
+                 "script":"calc_relax_static",
+                 "run-parameter":{
+                    "size-multipliers":{
+                       "a":[
+                          0,
+                          1
+                       ],
+                       "b":[
+                          0,
+                          1
+                       ],
+                       "c":[
+                          0,
+                          1
+                       ]
+                    },
+                    "energytolerance":0.0,
+                    "forcetolerance":{
+                       "value":1e-10,
+                       "unit":"eV/angstrom"
+                    },
+                    "maxiterations":10000,
+                    "maxevaluations":100000,
+                    "maxatommotion":{
+                       "value":0.01,
+                       "unit":"angstrom"
+                    }
+                 }
+              },
+              "potential-LAMMPS":{
+                 "key":"bb69cb78-f906-476f-866a-8411864e5130",
+                 "id":"1996--Farkas-D--Nb-Ti-Al--LAMMPS--ipr1",
+                 "potential":{
+                    "key":"0856888b-57ec-4005-828d-d1b0c331f120",
+                    "id":"1996--Farkas-D-Jones-C--Nb-Ti-Al"
+                 }
+              },
+              }
+        }
+
+        expected = {
+            "calculation-relax-static.calculation.LAMMPS-version": "22 Aug 2018",
             "calculation-relax-static.calculation.atomman-version": "1.2.4",
             "calculation-relax-static.calculation.iprPy-version": "0.8.3",
             "calculation-relax-static.calculation.run-parameter.energytolerance": 0,
@@ -23,63 +73,10 @@ class TestReshape:
             "calculation-relax-static.calculation.run-parameter.size-multipliers.c.0": 0,
             "calculation-relax-static.calculation.run-parameter.size-multipliers.c.1": 1,
             "calculation-relax-static.calculation.script": "calc_relax_static",
-            "calculation-relax-static.cohesive-energy.unit": "eV",
-            "calculation-relax-static.cohesive-energy.value": -4.827430718452249,
-            "calculation-relax-static.final-system.artifact.file": "relax_static-1.dump",
-            "calculation-relax-static.final-system.artifact.format": "atom_dump",
-            "calculation-relax-static.final-system.symbols": "Ti",
-            "calculation-relax-static.initial-system.artifact.file": "initial.dump",
-            "calculation-relax-static.initial-system.artifact.format": "atom_dump",
-            "calculation-relax-static.initial-system.symbols": "Ti",
             "calculation-relax-static.key": "00999575-6044-4420-baf5-9bb33e60b02c",
-            "calculation-relax-static.measured-box-parameter.lx.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.lx.value": 41.475322056565396,
-            "calculation-relax-static.measured-box-parameter.ly.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.ly.value": 41.4753220565657,
-            "calculation-relax-static.measured-box-parameter.lz.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.lz.value": 41.4753220565653,
-            "calculation-relax-static.measured-box-parameter.xy.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.xy.value": 0,
-            "calculation-relax-static.measured-box-parameter.xz.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.xz.value": 0,
-            "calculation-relax-static.measured-box-parameter.yz.unit": "angstrom",
-            "calculation-relax-static.measured-box-parameter.yz.value": 0,
-            "calculation-relax-static.measured-phase-state.pressure-xx.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-xx.value": 7.710641720200601e-09,
-            "calculation-relax-static.measured-phase-state.pressure-xy.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-xy.value": -1.4515215477264e-15,
-            "calculation-relax-static.measured-phase-state.pressure-xz.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-xz.value": 6.9985677372429004e-15,
-            "calculation-relax-static.measured-phase-state.pressure-yy.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-yy.value": 7.7103707729606e-09,
-            "calculation-relax-static.measured-phase-state.pressure-yz.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-yz.value": -1.961498759316e-15,
-            "calculation-relax-static.measured-phase-state.pressure-zz.unit": "GPa",
-            "calculation-relax-static.measured-phase-state.pressure-zz.value": 7.710727567715e-09,
-            "calculation-relax-static.measured-phase-state.temperature.unit": "K",
-            "calculation-relax-static.measured-phase-state.temperature.value": 0,
-            "calculation-relax-static.phase-state.pressure-xx.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-xx.value": 0,
-            "calculation-relax-static.phase-state.pressure-xy.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-xy.value": 0,
-            "calculation-relax-static.phase-state.pressure-xz.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-xz.value": 0,
-            "calculation-relax-static.phase-state.pressure-yy.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-yy.value": 0,
-            "calculation-relax-static.phase-state.pressure-yz.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-yz.value": 0,
-            "calculation-relax-static.phase-state.pressure-zz.unit": "GPa",
-            "calculation-relax-static.phase-state.pressure-zz.value": 0,
-            "calculation-relax-static.phase-state.temperature.unit": "K",
-            "calculation-relax-static.phase-state.temperature.value": 0,
             "calculation-relax-static.potential-LAMMPS.id": "1996--Farkas-D--Nb-Ti-Al--LAMMPS--ipr1",
             "calculation-relax-static.potential-LAMMPS.key": "bb69cb78-f906-476f-866a-8411864e5130",
             "calculation-relax-static.potential-LAMMPS.potential.id": "1996--Farkas-D-Jones-C--Nb-Ti-Al",
-            "calculation-relax-static.potential-LAMMPS.potential.key": "0856888b-57ec-4005-828d-d1b0c331f120",
-            "calculation-relax-static.system-info.artifact.file": "8d4f217e-0abe-443a-91cf-a2278a987451/10000.dump",
-            "calculation-relax-static.system-info.artifact.format": "atom_dump",
-            "calculation-relax-static.system-info.family": "A1--Cu--fcc",
-            "calculation-relax-static.system-info.symbol": "Ti"
+            "calculation-relax-static.potential-LAMMPS.potential.key": "0856888b-57ec-4005-828d-d1b0c331f120"
         }
-
-        assert reshape_feature.reshape("database/json/record.json", ".", False) == expected
+        assert reshape_feature.reshape(expected) == expected
