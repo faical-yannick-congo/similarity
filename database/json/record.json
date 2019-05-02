@@ -46,8 +46,7 @@
          "family":"A1--Cu--fcc",
          "artifact":{
             "file":"8d4f217e-0abe-443a-91cf-a2278a987451/10000.dump",
-            "format":"atom_dump",
-            "load_options":null
+            "format":"atom_dump"
          },
          "symbol":"Ti"
       },
