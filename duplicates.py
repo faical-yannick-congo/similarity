@@ -192,9 +192,36 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
     ...     npclose([False, False, False, True, True])
     ... )
 
+    Issue with multiple duplicates. The current implementation can
+    chains duplicates so that
+
+    >>> duplicates_allclose(
+    ...     pd.DataFrame(
+    ...         dict(
+    ...             A=[0.1, 0.2, 0.3, 0.4]
+    ...         )
+    ...     ),
+    ...     dcols=[],
+    ...     fcols=['A'],
+    ...     atol=0.2
+    ... )
+    0    False
+    1     True
+    2     True
+    3     True
+    dtype: bool
+
+    The answer is not really correct. It really should be [False,
+    True, False, True] probably. Basically, rows can be marked as
+    duplicates of rows that are themselves duplicates. This isn't
+    really correct, but is an edge case.
+
     """
+
+    alltrue = lambda x: [True] * len(x)
+
     func = sequence(
-        duplicated(subset=dcols, keep=False),
+        duplicated(subset=dcols, keep=False) if dcols else alltrue,
         lambda x: dataframe[x],
         sort_values(by=dcols + fcols),
         fduplicates(dcols, fcols, atol),
