@@ -20,3 +20,5 @@ install:
   - nix-shell --pure --command "cd iprPy; pip install --user .; cd .."
 script:
   - nix-shell --pure --command "py.test --doctest-modules duplicates.py"
+  - nix-shell --pure --command "black --check duplicates.py"
+  - nix-shell --pure --comannd "pylint duplicates.py"
