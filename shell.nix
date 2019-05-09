@@ -17,6 +17,7 @@ in
        nixpkgs.pkgs.git
        pypkgs.jupyter
        pypkgs.toolz
+       pypkgs.pytest
   ];
     src = null;
     shellHook = ''
