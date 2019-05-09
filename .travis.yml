@@ -21,5 +21,5 @@ install:
 script:
   - nix-shell --pure --command "py.test --doctest-modules duplicates.py"
   - nix-shell --pure --command "black --check duplicates.py"
-  - nix-shell --pure --comannd "pylint duplicates.py"
-  - nix-shell --pure --comannd "flake8 duplicates.py"
+  - nix-shell --pure --command "pylint duplicates.py"
+  - nix-shell --pure --command "flake8 duplicates.py"
