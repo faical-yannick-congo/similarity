@@ -19,6 +19,8 @@ in
       pypkgs.toolz
       pypkgs.pytest
       pypkgs.black
+      pypkgs.flake8
+      pypkgs.pylint
     ];
     src = null;
     shellHook = ''
@@ -39,9 +41,9 @@ in
       pip install --user atomman
 
       # To install iprPy
-      git clone https://github.com/lmhale99/iprPy.git /tmp/iprPy
-      cd /tmp/iprPy
-      pip install --user .
+      # git clone https://github.com/lmhale99/iprPy.git /tmp/iprPy
+      # cd /tmp/iprPy
+      # pip install --user .
 
     '';
 }

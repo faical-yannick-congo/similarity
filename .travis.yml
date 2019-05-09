@@ -16,5 +16,7 @@ before_cache:
   - nix copy --to file://$STORE -f shell.nix buildInputs
 install:
   - nix-shell --pure --command "echo 'run nix-shell and exit'"
+  - git clone https://github.com/lmhale99/iprPy.git
+  - nix-shell --pure --command "cd iprPy; pip install --user .; cd .."
 script:
-  - nix-shell --pure --command "py.test --doctest-modules"
+  - nix-shell --pure --command "py.test --doctest-modules duplicates.py"

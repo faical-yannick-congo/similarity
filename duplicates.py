@@ -1,23 +1,41 @@
+"""Provides a `duplicates_allclose` for finding duplicates in a
+DataFrame with tolerances.
+
+"""
+
 from toolz.curried import curry, compose
 import pandas as pd
 import numpy as np
 
 
-apply = curry(pd.DataFrame.apply)
-sort_values = curry(pd.DataFrame.sort_values)
-all = curry(pd.DataFrame.all)
-duplicated = curry(pd.DataFrame.duplicated)
-assign = curry(pd.DataFrame.assign)
-diff = curry(pd.DataFrame.diff)
-npappend = curry(np.append)
-npclose = curry(np.allclose)
+pdapply = curry(pd.DataFrame.apply)  # pylint: disable=invalid-name
+sort_values = curry(pd.DataFrame.sort_values)  # pylint: disable=invalid-name
+pdall = curry(pd.DataFrame.all)  # pylint: disable=invalid-name
+duplicated = curry(pd.DataFrame.duplicated)  # pylint: disable=invalid-name
+assign = curry(pd.DataFrame.assign)  # pylint: disable=invalid-name
+diff = curry(pd.DataFrame.diff)  # pylint: disable=invalid-name
+npappend = curry(np.append)  # pylint: disable=invalid-name
+npclose = curry(np.allclose)  # pylint: disable=invalid-name
 
 
 def sequence(*args):
+    """Compose functions in order
+
+    Args:
+      args: the functions to compose
+
+    Returns:
+      composed functions
+
+    >>> assert sequence(lambda x: x + 1, lambda x: x * 2)(3) == 8
+    """
     return compose(*args[::-1])
+
 
 @curry
 def debug(statement, value):
+    """Useful debug for functional programming
+    """
     print()
     print(statement)
     print(value)
@@ -25,34 +43,28 @@ def debug(statement, value):
 
 
 def find_duplicates(df):
+    """
+    """
     return df.apply(
-        sequence(
-            np.array,
-            lambda x: x[:-1] == x[1:],
-            npappend([False])
-        ),
-        axis=0)
+        sequence(np.array, lambda x: x[:-1] == x[1:], npappend([False])), axis=0
+    )
 
 
 @curry
 def duplicate_if_close(df, atol, rtol):
-    return sequence(
-        diff,
-        apply(func=allclose0(atol, rtol), axis=0)
-    )(df)
+    return sequence(diff, pdapply(func=allclose0(atol, rtol), axis=0))(df)
 
 
 @curry
 def allclose0(atol, rtol, arr):
-    return (arr <= atol + rtol * arr)
+    return arr <= atol + rtol * arr
 
 
 @curry
 def fduplicates(cols, fcols, atol, rtol, df):
-    return pd.concat([
-        duplicate_if_close(df[fcols], atol, rtol),
-        find_duplicates(df[cols])
-    ], axis=1)
+    return pd.concat(
+        [duplicate_if_close(df[fcols], atol, rtol), find_duplicates(df[cols])], axis=1
+    )
 
 
 @curry
@@ -112,7 +124,7 @@ def duplicates_allclose(df, dcols, fcols, atol=1e-10, rtol=1e-10):
         lambda x: df[x],
         sort_values(by=dcols + fcols),
         fduplicates(dcols, fcols, atol, rtol),
-        apply(func=all, axis=1)
+        pdapply(func=pdall, axis=1),
     )
 
     return df.assign(duplicates=func(df)).duplicates.fillna(False).rename()
