@@ -7,18 +7,19 @@ in
     env = nixpkgs.buildEnv { name=name; paths=buildInputs; };
     buildInputs = [
       pypkgs.pip
-       pypkgs.python
-       pypkgs.numpy
-       pypkgs.scipy
-       pypkgs.pandas
-       pypkgs.cython
-       pypkgs.matplotlib
-       pypkgs.tkinter
-       nixpkgs.pkgs.git
-       pypkgs.jupyter
-       pypkgs.toolz
-       pypkgs.pytest
-  ];
+      pypkgs.python
+      pypkgs.numpy
+      pypkgs.scipy
+      pypkgs.pandas
+      pypkgs.cython
+      pypkgs.matplotlib
+      pypkgs.tkinter
+      nixpkgs.pkgs.git
+      pypkgs.jupyter
+      pypkgs.toolz
+      pypkgs.pytest
+      pypkgs.black
+    ];
     src = null;
     shellHook = ''
       SOURCE_DATE_EPOCH=$(date +%s)
@@ -38,10 +39,9 @@ in
       pip install --user atomman
 
       # To install iprPy
-      # cd ..
-      # git clone https://github.com/lmhale99/iprPy.git
-      # cd iprPy
-      # pip install --user .
+      git clone https://github.com/lmhale99/iprPy.git /tmp/iprPy
+      cd /tmp/iprPy
+      pip install --user .
 
     '';
 }
