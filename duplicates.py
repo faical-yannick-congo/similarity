@@ -97,9 +97,9 @@ def duplicate_if_close(dataframe, fcols):
     2   True   True  False   True  False
 
     """
-    return sequence(diff, pdapply(func=lambda x: np.absolute(x) <= fcols[x.name], axis=0))(
-        dataframe
-    )
+    return sequence(
+        diff, pdapply(func=lambda x: np.absolute(x) <= fcols[x.name], axis=0)
+    )(dataframe)
 
 
 @curry
