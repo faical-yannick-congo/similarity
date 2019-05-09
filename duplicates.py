@@ -97,7 +97,9 @@ def duplicate_if_close(dataframe, atol=1e-10):
     2   True   True  False   True  False
 
     """
-    return sequence(diff, pdapply(func=lambda x: np.absolute(x) <= atol, axis=0))(dataframe)
+    return sequence(diff, pdapply(func=lambda x: np.absolute(x) <= atol, axis=0))(
+        dataframe
+    )
 
 
 @curry
@@ -132,7 +134,11 @@ def fduplicates(dcols, fcols, atol, dataframe):
     2   True   True  False   True  False
     """
     return pd.concat(
-        [duplicate_if_close(dataframe[fcols], atol), find_duplicates_col(dataframe[dcols])], axis=1
+        [
+            duplicate_if_close(dataframe[fcols], atol),
+            find_duplicates_col(dataframe[dcols]),
+        ],
+        axis=1,
     )
 
 
@@ -195,4 +201,6 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
         pdapply(func=pdall, axis=1),
     )
 
-    return dataframe.assign(duplicates=func(dataframe)).duplicates.fillna(False).rename()
+    return (
+        dataframe.assign(duplicates=func(dataframe)).duplicates.fillna(False).rename()
+    )
