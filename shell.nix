@@ -12,13 +12,11 @@ in
        pypkgs.scipy
        pypkgs.pandas
        pypkgs.cython
-       # gmsh
-       # skfmm
-       # pysparse
        pypkgs.matplotlib
        pypkgs.tkinter
        nixpkgs.pkgs.git
        pypkgs.jupyter
+       pypkgs.toolz
   ];
     src = null;
     shellHook = ''
@@ -34,9 +32,11 @@ in
       jupyter contrib nbextension install --user > /dev/null 2>&1
       jupyter nbextension enable spellchecker/main > /dev/null 2>&1
 
-      pip install --user -r requirements.txt
+      # pip install --user -r requirements.txt
 
-      # To install iprpy
+      pip install --user atomman
+
+      # To install iprPy
       # cd ..
       # git clone https://github.com/lmhale99/iprPy.git
       # cd iprPy
