@@ -71,14 +71,14 @@ def find_duplicates_col(dataframe):
 
 
 @curry
-def duplicate_if_close(dataframe, atol=1e-10):
+def duplicate_if_close(dataframe, fcols):
     """Find neighboring column duplicates based tolerances.
 
     This only works with data frames containing numbers.
 
     Args:
       dataframe: a dataframe
-      atol: the absolute tolerance
+      fcols: the absolute tolerances
 
     Returns:
       a dataframe of the same shape but with bool values indicating
@@ -90,26 +90,26 @@ def duplicate_if_close(dataframe, atol=1e-10):
     ...          C=[1, 1.1, 1.2],
     ...          D=[  1,   1,   1],
     ...          E=[  1,   2,   1])
-    ... ), atol=0.02)
+    ... ), dict(A=0.02, B=0.02, C=0.02, D=0.02, E=0.02))
            A      B      C      D      E
     0  False  False  False  False  False
     1   True  False  False   True  False
     2   True   True  False   True  False
 
     """
-    return sequence(diff, pdapply(func=lambda x: np.absolute(x) <= atol, axis=0))(
+    return sequence(diff, pdapply(func=lambda x: np.absolute(x) <= fcols[x.name], axis=0))(
         dataframe
     )
 
 
 @curry
-def fduplicates(dcols, fcols, atol, dataframe):
+def fduplicates(dcols, fcols, dataframe):
     """Check for mixture of exact duplicates and closeness
 
     Args:
       dcols: the columns to check for exact duplicates
-      fcols: the columns to check for closeness
-      atol: the absolute tolerance to check for closeness
+      fcols: the columns to check for closeness, a dict with column names as
+       keys and tolerances as values
       dataframe: the dataframe
 
     Returns:
@@ -118,8 +118,7 @@ def fduplicates(dcols, fcols, atol, dataframe):
 
     >>> fduplicates(
     ...     dcols=['C', 'D', 'E'],
-    ...     fcols=['A', 'B'],
-    ...     atol=0.02,
+    ...     fcols=dict(A=0.02, B=0.02),
     ...     dataframe=pd.DataFrame(
     ...         dict(A=[1.01, 1.02, 1.03],
     ...              B=[1.1, 1.0, 0.99],
@@ -132,10 +131,11 @@ def fduplicates(dcols, fcols, atol, dataframe):
     0  False  False  False  False  False
     1   True  False  False   True  False
     2   True   True  False   True  False
+
     """
     return pd.concat(
         [
-            duplicate_if_close(dataframe[fcols], atol),
+            duplicate_if_close(dataframe[list(fcols.keys())], fcols),
             find_duplicates_col(dataframe[dcols]),
         ],
         axis=1,
@@ -143,14 +143,14 @@ def fduplicates(dcols, fcols, atol, dataframe):
 
 
 @curry
-def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
+def duplicates_allclose(dataframe, dcols, fcols):
     """Determine duplicates in dataframe based on tolerances
 
     Args:
       dataframe: the dataframe
       dcols: the columns that are tested for exact duplicates
-      fcols: the columns that are checked for tolerance
-      atol: the absolute tolerance, can be float or array with length of fcols
+      fcols: the columns that are checked for tolerance, dict with
+        tolerances
 
     This is the similar to `pandas.DataFrame.duplicated` with
     `keep='first'` so only the first duplicate is kept.
@@ -174,7 +174,7 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
     ...         C=[1, 1.01, 2, 3, 3.01]
     ...     ),
     ...     pd.DataFrame,
-    ...     duplicates_allclose(dcols=['A', 'B'], fcols=['C'], atol=0.02),
+    ...     duplicates_allclose(dcols=['A', 'B'], fcols=dict(C=0.02)),
     ...     npclose([False, True, False, False, True])
     ... )
 
@@ -188,7 +188,7 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
     ...         D=[4.5, 4.5, 4.5, 4.6, 4.5]
     ...     ),
     ...     pd.DataFrame,
-    ...     duplicates_allclose(dcols=['A', 'B'], fcols=['C', 'D'], atol=0.2),
+    ...     duplicates_allclose(dcols=['A', 'B'], fcols=dict(C=0.2, D=0.2)),
     ...     npclose([False, False, False, True, True])
     ... )
 
@@ -202,8 +202,7 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
     ...         )
     ...     ),
     ...     dcols=[],
-    ...     fcols=['A'],
-    ...     atol=0.2
+    ...     fcols=dict(A=0.2)
     ... )
     0    False
     1     True
@@ -223,8 +222,8 @@ def duplicates_allclose(dataframe, dcols, fcols, atol=1e-10):
     func = sequence(
         duplicated(subset=dcols, keep=False) if dcols else alltrue,
         lambda x: dataframe[x],
-        sort_values(by=dcols + fcols),
-        fduplicates(dcols, fcols, atol),
+        sort_values(by=dcols + list(fcols.keys())),
+        fduplicates(dcols, fcols),
         pdapply(func=pdall, axis=1),
     )
 
