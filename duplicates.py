@@ -12,10 +12,8 @@ pdapply = curry(pd.DataFrame.apply)  # pylint: disable=invalid-name
 sort_values = curry(pd.DataFrame.sort_values)  # pylint: disable=invalid-name
 pdall = curry(pd.DataFrame.all)  # pylint: disable=invalid-name
 duplicated = curry(pd.DataFrame.duplicated)  # pylint: disable=invalid-name
-assign = curry(pd.DataFrame.assign)  # pylint: disable=invalid-name
 diff = curry(pd.DataFrame.diff)  # pylint: disable=invalid-name
 npappend = curry(np.append)  # pylint: disable=invalid-name
-npclose = curry(np.allclose)  # pylint: disable=invalid-name
 
 
 def sequence(*args):
@@ -164,6 +162,7 @@ def duplicates_allclose(dataframe, dcols, fcols):
     should in general work well. The edge case will be examined below.
 
     >>> from toolz.curried import pipe
+    >>> npclose = curry(np.allclose)
 
     Dataframe with 2 duplicates to be removed
 
