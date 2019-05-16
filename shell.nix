@@ -7,19 +7,21 @@ in
     env = nixpkgs.buildEnv { name=name; paths=buildInputs; };
     buildInputs = [
       pypkgs.pip
-       pypkgs.python
-       pypkgs.numpy
-       pypkgs.scipy
-       pypkgs.pandas
-       pypkgs.cython
-       # gmsh
-       # skfmm
-       # pysparse
-       pypkgs.matplotlib
-       pypkgs.tkinter
-       nixpkgs.pkgs.git
-       pypkgs.jupyter
-  ];
+      pypkgs.python
+      pypkgs.numpy
+      pypkgs.scipy
+      pypkgs.pandas
+      pypkgs.cython
+      pypkgs.matplotlib
+      pypkgs.tkinter
+      nixpkgs.pkgs.git
+      pypkgs.jupyter
+      pypkgs.toolz
+      pypkgs.pytest
+      pypkgs.black
+      pypkgs.flake8
+      pypkgs.pylint
+    ];
     src = null;
     shellHook = ''
       SOURCE_DATE_EPOCH=$(date +%s)
@@ -34,12 +36,13 @@ in
       jupyter contrib nbextension install --user > /dev/null 2>&1
       jupyter nbextension enable spellchecker/main > /dev/null 2>&1
 
-      pip install --user -r requirements.txt
+      # pip install --user -r requirements.txt
 
-      # To install iprpy
-      # cd ..
-      # git clone https://github.com/lmhale99/iprPy.git
-      # cd iprPy
+      pip install --user atomman
+
+      # To install iprPy
+      # git clone https://github.com/lmhale99/iprPy.git /tmp/iprPy
+      # cd /tmp/iprPy
       # pip install --user .
 
     '';
